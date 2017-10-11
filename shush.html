@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>shush</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+
+<h1>SHUSH</h1>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script type="text/javascript">
+  var socket = io.connect();
+  var aud = new Audio('/audio/shush.mp3');
+  aud.loop = true;
+
+  function updatePlayer(data) {
+    if (data.volume != aud.volume) {
+      aud.volume = data.volume;
+    }
+    if (data.playing && aud.paused) {
+      aud.play();
+    }
+    else if (!data.playing && !aud.paused) {
+      aud.pause();
+    }
+  }
+
+  socket.on('connected', function (data) {
+    updatePlayer(data);
+  });
+
+  socket.on('controller data', function (data) {
+    updatePlayer(data);
+  });
+
+</script>
+</body>
+</html>
